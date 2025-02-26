@@ -1,8 +1,9 @@
 import { Writable } from "node:stream";
-import child_process, { type SpawnOptions } from "node:child_process";
+import child_process from "node:child_process";
 
 import { Command, CommandOptions } from "./command.js";
 import { getEnvironment } from "../env.js";
+import { quote } from "shell-quote";
 
 export type DefaultArgsFactory<O extends {} = {}> = (
   options?: CommandOptions<O>
@@ -15,7 +16,7 @@ export function runCommand(
 ): Promise<string> {
   const verbose = options?.verbose ?? false;
   if (verbose) {
-    console.log(`$ ${file} ${args.join(" ")}`);
+    console.log(`$ ${file} ${quote(args)}`);
   }
 
   // If the verbose option is enabled, the child process will inherit the
@@ -92,7 +93,7 @@ export function createCommand<O extends {} = {}>(
       ...defaultOptions,
       ...options,
       env,
-      shell: process.env.SHELL ? process.env.SHELL : true,
+      shell: false,
       stdio: "pipe",
     });
   };

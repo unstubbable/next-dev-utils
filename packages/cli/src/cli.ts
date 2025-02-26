@@ -19,6 +19,7 @@ import tasks from "./tasks.js";
 import inquirer from "inquirer";
 
 yargs(hideBin(process.argv))
+  .parserConfiguration({ "populate--": true })
   .command(
     "test-deploy <test-file>",
     "performs a pack and test deploy of the specified test",

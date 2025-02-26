@@ -6,6 +6,7 @@ import { packNext, pnpm } from "@next-dev-utils/utils";
 
 type Options = {
   "test-file": string;
+  ["--"]?: string[];
 };
 
 export async function testDeployCommand(options: Options) {
@@ -44,16 +45,20 @@ export async function testDeployCommand(options: Options) {
   // Pack the next project.
   const url = await packNext();
 
+  const extraArgs = options["--"] ?? [];
+
   // Start the test deploy. If this fails, the error will be printed to the
   // console because it'll throw.
-  await pnpm(["test-deploy", path.relative(nextProjectPath, testFile)], {
-    cwd: nextProjectPath,
-    env: {
-      VERCEL_TEST_TEAM,
-      VERCEL_TEST_TOKEN,
-      NEXT_TEST_VERSION: url,
-    },
-    stdout: "inherit",
-    stderr: "inherit",
-  });
+  await pnpm(
+    ["test-deploy", path.relative(nextProjectPath, testFile), ...extraArgs],
+    {
+      cwd: nextProjectPath,
+      env: {
+        VERCEL_TEST_TEAM,
+        VERCEL_TEST_TOKEN,
+        NEXT_TEST_VERSION: url,
+      },
+      stdio: "inherit",
+    }
+  );
 }
