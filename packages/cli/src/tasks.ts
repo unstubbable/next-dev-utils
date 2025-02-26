@@ -4,7 +4,11 @@ import path from "path";
 // For all the tasks in the "../tasks" folder, we want to import it and add its
 // name to the list of tasks that we export from this file.
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const files = fs.readdirSync(path.join(__dirname, "tasks"));
+let files: string[] = [];
+
+try {
+  files = fs.readdirSync(path.join(__dirname, "tasks"));
+} catch {}
 
 // This is a list of all the tasks that we want to export from this file.
 export type Task = {
